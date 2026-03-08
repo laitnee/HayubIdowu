@@ -1,0 +1,55 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TagBadge from './TagBadge.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, tags, category, heroImage } = post.data;
+
+const formattedDate = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const categorySlug = category.toLowerCase().replace(/\s+/g, '-');
+---
+
+<article
+  class:list={["post-card group rounded-[--radius-card-val] border border-border-color bg-surface p-6 shadow-[--shadow-card-val] hover:border-accent transition-colors", { "has-thumb": !!heroImage }]}
+>
+  <div class="post-card-body">
+    <div class="post-meta mb-2 flex flex-wrap items-center gap-2 text-xs text-muted">
+      <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+      <span aria-hidden="true">·</span>
+      <a href={`/categories/${categorySlug}`} class="hover:text-accent transition-colors">
+        {category}
+      </a>
+    </div>
+
+    <h2 class="mb-2 font-display text-xl font-bold leading-snug group-hover:text-accent transition-colors">
+      <a href={`/blog/${post.slug}`} class="hover:no-underline">
+        {title}
+      </a>
+    </h2>
+
+    <p class="post-desc mb-4 text-sm text-muted leading-relaxed line-clamp-2">
+      {description}
+    </p>
+
+    {tags.length > 0 && (
+      <div class="post-tags flex flex-wrap gap-1.5">
+        {tags.map(tag => <TagBadge tag={tag} />)}
+      </div>
+    )}
+  </div>
+
+  {heroImage && (
+    <div class="post-thumb">
+      <img src={heroImage} alt="" loading="lazy" />
+    </div>
+  )}
+</article>

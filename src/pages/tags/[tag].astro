@@ -1,0 +1,36 @@
+---
+import { getAllTags, getPostsByTag, slugify } from '../../utils/posts';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/blog/PostList.astro';
+
+export async function getStaticPaths() {
+  const tags = await getAllTags();
+  return tags.map(tag => ({
+    params: { tag: slugify(tag) },
+    props: { tagName: tag },
+  }));
+}
+
+const { tagName } = Astro.props;
+const posts = await getPostsByTag(tagName);
+---
+
+<BaseLayout
+  title={`#${tagName} — Hayub Idowu`}
+  description={`Posts tagged with "${tagName}".`}
+>
+  <header class="mb-8">
+    <p class="mb-1 text-sm text-muted">
+      <a href="/tags" class="hover:text-accent transition-colors">Tags</a>
+      <span class="mx-1">›</span>
+    </p>
+    <h1 class="font-display text-3xl font-bold text-text">
+      <span class="text-accent">#</span>{tagName}
+    </h1>
+    <p class="mt-1 text-sm text-muted">
+      {posts.length} post{posts.length !== 1 ? 's' : ''}
+    </p>
+  </header>
+
+  <PostList posts={posts} />
+</BaseLayout>

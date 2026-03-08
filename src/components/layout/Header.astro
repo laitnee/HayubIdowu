@@ -1,0 +1,42 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const navLinks = [
+  { href: '/', label: 'Blog' },
+  { href: '/tags', label: 'Tags' },
+  { href: '/categories', label: 'Categories' },
+  { href: '/about', label: 'About' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="border-b border-border-color bg-surface sticky top-0 z-10">
+  <nav class="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+    <a
+      href="/"
+      class="font-display font-bold text-text hover:text-accent transition-colors text-lg tracking-tight"
+    >
+      Hayub Idowu
+    </a>
+
+    <div class="flex items-center gap-4">
+      <div class="hidden sm:flex items-center gap-5">
+        {navLinks.map(({ href, label }) => (
+          <a
+            href={href}
+            class:list={[
+              'text-sm transition-colors',
+              currentPath === href
+                ? 'text-accent font-medium'
+                : 'text-muted hover:text-text',
+            ]}
+          >
+            {label}
+          </a>
+        ))}
+      </div>
+      <ThemeToggle />
+    </div>
+  </nav>
+</header>

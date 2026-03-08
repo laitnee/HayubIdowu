@@ -1,0 +1,37 @@
+---
+import { getAllPosts, getAllTags, slugify } from '../utils/posts';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostList from '../components/blog/PostList.astro';
+
+const posts = await getAllPosts();
+const tags = await getAllTags();
+---
+
+<BaseLayout
+  title="Hayub Idowu — Blog"
+  description="Personal blog on web development, design systems, and building things on the web."
+>
+  <header class="mb-10">
+    <h1 class="mb-2 font-display text-4xl font-bold text-text">
+      Hayub Idowu
+    </h1>
+    <p class="text-muted text-lg leading-relaxed">
+      Writing about web development, design systems, and whatever I'm building.
+    </p>
+  </header>
+
+  {tags.length > 0 && (
+    <div class="mb-8 flex flex-wrap gap-2">
+      {tags.map(tag => (
+        <a
+          href={`/tags/${slugify(tag)}`}
+          class="rounded-[--radius-card-val] border border-border-color bg-tag-bg px-2.5 py-1 text-xs text-tag-text hover:bg-accent hover:text-white hover:border-accent transition-colors"
+        >
+          #{tag}
+        </a>
+      ))}
+    </div>
+  )}
+
+  <PostList posts={posts} />
+</BaseLayout>

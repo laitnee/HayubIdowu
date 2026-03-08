@@ -1,0 +1,24 @@
+---
+interface Props {
+  tag: string;
+  linked?: boolean;
+}
+
+const { tag, linked = true } = Astro.props;
+const slug = tag.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+---
+
+{linked ? (
+  <a
+    href={`/tags/${slug}`}
+    class="inline-flex items-center rounded-[--radius-card-val] border border-border-color bg-tag-bg px-2 py-0.5 text-xs text-tag-text hover:bg-accent hover:text-white hover:border-accent transition-colors"
+  >
+    #{tag}
+  </a>
+) : (
+  <span
+    class="inline-flex items-center rounded-[--radius-card-val] border border-border-color bg-tag-bg px-2 py-0.5 text-xs text-tag-text"
+  >
+    #{tag}
+  </span>
+)}

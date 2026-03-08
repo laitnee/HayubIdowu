@@ -1,0 +1,35 @@
+---
+import { getAllCategories, getPostsByCategory, slugify } from '../../utils/posts';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const categories = await getAllCategories();
+
+const categoryCounts: Record<string, number> = {};
+for (const cat of categories) {
+  const posts = await getPostsByCategory(cat);
+  categoryCounts[cat] = posts.length;
+}
+---
+
+<BaseLayout title="Categories — Hayub Idowu" description="Browse posts by category.">
+  <header class="mb-8">
+    <h1 class="font-display text-3xl font-bold text-text">Categories</h1>
+    <p class="mt-1 text-sm text-muted">
+      {categories.length} categor{categories.length !== 1 ? 'ies' : 'y'}
+    </p>
+  </header>
+
+  <div class="flex flex-wrap gap-3">
+    {categories.map(cat => (
+      <a
+        href={`/categories/${slugify(cat)}`}
+        class="flex items-center gap-2 rounded-[--radius-card-val] border border-border-color bg-surface px-3 py-2 text-sm text-text hover:border-accent hover:text-accent transition-colors"
+      >
+        {cat}
+        <span class="ml-1 rounded-full bg-tag-bg px-1.5 py-0.5 text-xs text-muted">
+          {categoryCounts[cat]}
+        </span>
+      </a>
+    ))}
+  </div>
+</BaseLayout>

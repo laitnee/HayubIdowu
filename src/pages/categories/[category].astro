@@ -1,0 +1,34 @@
+---
+import { getAllCategories, getPostsByCategory, slugify } from '../../utils/posts';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/blog/PostList.astro';
+
+export async function getStaticPaths() {
+  const categories = await getAllCategories();
+  return categories.map(cat => ({
+    params: { category: slugify(cat) },
+    props: { categoryName: cat },
+  }));
+}
+
+const { categoryName } = Astro.props;
+const posts = await getPostsByCategory(categoryName);
+---
+
+<BaseLayout
+  title={`${categoryName} — Hayub Idowu`}
+  description={`Posts in the "${categoryName}" category.`}
+>
+  <header class="mb-8">
+    <p class="mb-1 text-sm text-muted">
+      <a href="/categories" class="hover:text-accent transition-colors">Categories</a>
+      <span class="mx-1">›</span>
+    </p>
+    <h1 class="font-display text-3xl font-bold text-text">{categoryName}</h1>
+    <p class="mt-1 text-sm text-muted">
+      {posts.length} post{posts.length !== 1 ? 's' : ''}
+    </p>
+  </header>
+
+  <PostList posts={posts} />
+</BaseLayout>

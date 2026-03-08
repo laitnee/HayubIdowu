@@ -1,0 +1,101 @@
+---
+// All logic handled client-side
+---
+
+<div class="flex items-center gap-2">
+  <!-- Theme selector -->
+  <select
+    id="theme-selector"
+    aria-label="Select visual theme"
+    class="rounded-[--radius-card-val] border border-border-color bg-surface px-2 py-1 text-xs text-text cursor-pointer focus:outline-none focus:ring-1 focus:ring-accent"
+  >
+    <option value="bold">Bold</option>
+  </select>
+
+  <!-- Dark / Light toggle -->
+  <button
+    id="color-mode-toggle"
+    aria-label="Toggle dark mode"
+    class="flex h-7 w-7 items-center justify-center rounded-[--radius-card-val] border border-border-color bg-surface text-text hover:border-accent hover:text-accent transition-colors"
+  >
+    <!-- Sun icon (visible in dark mode → click to go light) -->
+    <svg
+      id="icon-sun"
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-3.5 w-3.5 hidden"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+    </svg>
+    <!-- Moon icon (visible in light mode → click to go dark) -->
+    <svg
+      id="icon-moon"
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-3.5 w-3.5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9 9 0 008.354-5.646z" />
+    </svg>
+  </button>
+</div>
+
+<script>
+  const THEMES = ['bold'] as const;
+  type Theme = typeof THEMES[number];
+
+  function applyTheme(theme: Theme, mode: 'dark' | 'light') {
+    const html = document.documentElement;
+    html.setAttribute('data-theme', theme);
+    if (mode === 'dark') {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+    localStorage.setItem('blog-theme', theme);
+    localStorage.setItem('blog-color-mode', mode);
+    syncUI(theme, mode);
+  }
+
+  function syncUI(theme: Theme, mode: 'dark' | 'light') {
+    const sun = document.getElementById('icon-sun');
+    const moon = document.getElementById('icon-moon');
+    const sel = document.getElementById('theme-selector') as HTMLSelectElement | null;
+
+    if (sun) sun.classList.toggle('hidden', mode !== 'dark');
+    if (moon) moon.classList.toggle('hidden', mode === 'dark');
+    if (sel) sel.value = theme;
+  }
+
+  function currentTheme(): Theme {
+    const t = document.documentElement.getAttribute('data-theme') as Theme;
+    return (THEMES as readonly string[]).includes(t) ? t as Theme : 'bold';
+  }
+
+  function currentMode(): 'dark' | 'light' {
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  }
+
+  // Sync UI to the already-applied values (set by inline script in <head>)
+  // Run immediately — module scripts are deferred so DOM is ready
+  syncUI(currentTheme(), currentMode());
+
+  document.getElementById('color-mode-toggle')?.addEventListener('click', () => {
+    const newMode = currentMode() === 'dark' ? 'light' : 'dark';
+    applyTheme(currentTheme(), newMode);
+  });
+
+  const sel = document.getElementById('theme-selector') as HTMLSelectElement | null;
+  sel?.addEventListener('change', (e) => {
+    const target = e.target as HTMLSelectElement;
+    const newTheme = target.value as Theme;
+    applyTheme(newTheme, currentMode());
+  });
+</script>

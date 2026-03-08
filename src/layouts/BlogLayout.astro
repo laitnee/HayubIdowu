@@ -1,0 +1,19 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <slot />
+  <nav class="mt-12 border-t border-border-color pt-6">
+    <a href="/" class="text-sm text-accent hover:text-accent-hover transition-colors">
+      ← Back to all posts
+    </a>
+  </nav>
+</BaseLayout>

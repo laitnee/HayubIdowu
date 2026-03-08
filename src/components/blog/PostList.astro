@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PostCard from './PostCard.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+
+// Group by year (descending) for year-based timeline themes
+const postsByYear: Record<string, CollectionEntry<'blog'>[]> = {};
+for (const post of posts) {
+  const year = post.data.pubDate.getFullYear().toString();
+  if (!postsByYear[year]) postsByYear[year] = [];
+  postsByYear[year].push(post);
+}
+const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
+---
+
+{posts.length === 0 ? (
+  <p class="text-muted text-sm">No posts found.</p>
+) : (
+  <div class="post-list">
+    {years.map(year => (
+      <>
+        <div class="post-year-label">{year}</div>
+        {postsByYear[year].map(post => <PostCard post={post} />)}
+      </>
+    ))}
+  </div>
+)}
