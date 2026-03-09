@@ -1,6 +1,9 @@
 name = "hayubidowu"
-pages_build_output_dir = "dist"
+compatibility_date = "2026-03-09"
 
-[[env.production.routes]]
+[assets]
+directory = "./dist"
+
+[[routes]]
 pattern = "hayubidowu.com/*"
 zone_name = "hayubidowu.com"
