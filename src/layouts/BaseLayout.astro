@@ -40,8 +40,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         const stored = localStorage.getItem('blog-theme') || 'bold';
         const theme = THEMES.includes(stored) ? stored : 'bold';
         const storedMode = localStorage.getItem('blog-color-mode');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const isDark = storedMode ? storedMode === 'dark' : prefersDark;
+        const isDark = storedMode === 'dark';
 
         document.documentElement.setAttribute('data-theme', theme);
         if (isDark) document.documentElement.classList.add('dark');

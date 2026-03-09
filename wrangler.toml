@@ -1,0 +1,6 @@
+name = "hayubidowu"
+pages_build_output_dir = "dist"
+
+[[env.production.routes]]
+pattern = "hayubidowu.com/*"
+zone_name = "hayubidowu.com"
